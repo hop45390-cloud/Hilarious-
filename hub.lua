@@ -184,11 +184,21 @@ local sbc=Instance.new("UICorner")
 sbc.CornerRadius=UDim.new(0,8)
 sbc.Parent=sb
 
-local function fire(n,...)
+local function fireA(n)
 local r=rs:FindFirstChild(n)
 if not r then return end
 pcall(function()
-if r:IsA("RemoteEvent")then r:FireServer(...)elseif r:IsA("RemoteFunction")then r:InvokeServer(...)end
+if r:IsA("RemoteEvent")then r:FireServer()
+elseif r:IsA("RemoteFunction")then r:InvokeServer()end
+end)
+end
+
+local function fireB(n,a)
+local r=rs:FindFirstChild(n)
+if not r then return end
+pcall(function()
+if r:IsA("RemoteEvent")then r:FireServer(a)
+elseif r:IsA("RemoteFunction")then r:InvokeServer(a)end
 end)
 end
 
@@ -280,7 +290,7 @@ local h=c:FindFirstChild("HumanoidRootPart")
 if h then h.CFrame=CFrame.new(h.Position,Vector3.new(p.X,h.Position.Y,p.Z))end
 end
 pcall(function() t:Activate()end)
-fire("weaponFire")
+fireA("weaponFire")
 end
 
 local function collect()
@@ -292,7 +302,7 @@ if v:IsA("Model")then
 local n=v.Name:lower()
 if n:find("animal")or n:find("pet")or n:find("brainrot")then
 local d=(v:GetPivot().Position-my).Magnitude
-if d<50 then fire("collectAnimal",v)end
+if d<50 then fireB("collectAnimal",v)end
 end end end
 end
 
@@ -311,8 +321,8 @@ pcall(shoot)
 task.wait(0.2)
 end end
 if state.collect then pcall(collect)end
-if state.sell then fire("sellAll")end
-if state.buy then fire("buyDamage")fire("buyGun")end
+if state.sell then fireA("sellAll")end
+if state.buy then fireA("buyDamage")fireA("buyGun")end
 task.wait(1)
 end
 end
